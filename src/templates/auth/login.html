@@ -94,14 +94,16 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Demo Account Info -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center" data-aos="fade-up" data-aos-delay="200">
-            <h3 class="text-sm font-semibold text-blue-800 mb-2">Demo Account</h3>
-            <p class="text-xs text-blue-600">
-                Username: <strong>imsyad</strong> | Password: <strong>imsyad1373</strong>
-            </p>
+            
+            <!-- Register Link -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">
+                    Belum punya akun? 
+                    <a href="{{ url_for('auth.register') }}" class="text-primary-600 hover:text-primary-500 font-semibold transition-colors">
+                        Daftar sekarang
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 </section>
