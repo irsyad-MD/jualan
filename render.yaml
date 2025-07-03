@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: imsydz-dev
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn -b 0.0.0.0:10000 src.main:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: ae38d2b9f2c147b48f204c6a8f6fdc4c71e1281dca9dbed7f3a16bcf25f2c693
+      - key: MAIL_USERNAME
+        value: imsyad8@gmail.com
+      - key: MAIL_PASSWORD
+        value: kzaypawacnzmiuuy
+      - key: ADMIN_USERNAME
+        value: imsyad
+      - key: ADMIN_PASSWORD
+        value: imsyad1373
+      - key: ADMIN_EMAIL
+        value: imsyad8@gmail.com
