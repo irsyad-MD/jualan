@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}imsydz Dev - Layanan Digital & Template Website Terpercaya{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 gradient-bg opacity-90"></div>
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0">
+        <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce-slow"></div>
+        <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full animate-pulse-slow"></div>
+        <div class="absolute bottom-40 left-20 w-12 h-12 bg-white/10 rounded-full animate-bounce-slow" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-20 right-40 w-24 h-24 bg-white/10 rounded-full animate-pulse-slow" style="animation-delay: 2s;"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+            <span class="block">Wujudkan</span>
+            <span class="block text-yellow-300">Website Impian</span>
+            <span class="block">Anda</span>
+        </h1>
+        
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90 animate-slide-up">
+            Layanan digital terpercaya untuk pembuatan website, template premium, dan perbaikan kode. 
+            Bergabunglah dengan ribuan klien yang telah mempercayai kami.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style="animation-delay: 0.3s;">
+            <a href="{{ url_for('main.templates') }}" 
+               class="bg-white text-gray-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 hover-lift">
+                <i class="fas fa-rocket mr-2"></i>
+                Lihat Template
+            </a>
+            <a href="{{ url_for('main.services') }}" 
+               class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300 hover-lift">
+                <i class="fas fa-code mr-2"></i>
+                Layanan Kami
+            </a>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 animate-slide-up" style="animation-delay: 0.6s;">
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold text-yellow-300">500+</div>
+                <div class="text-sm md:text-base opacity-80">Website Dibuat</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold text-yellow-300">50+</div>
+                <div class="text-sm md:text-base opacity-80">Template Premium</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold text-yellow-300">1000+</div>
+                <div class="text-sm md:text-base opacity-80">Klien Puas</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-bold text-yellow-300">24/7</div>
+                <div class="text-sm md:text-base opacity-80">Support</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+        <i class="fas fa-chevron-down text-2xl"></i>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-20 bg-white" data-aos="fade-up">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Layanan <span class="text-gradient">Unggulan</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Kami menyediakan solusi digital lengkap untuk kebutuhan bisnis Anda
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Service 1 -->
+            <div class="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-2xl hover-lift" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-laptop-code text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Pembuatan Website</h3>
+                <p class="text-gray-600 mb-6">
+                    Website custom yang responsif, cepat, dan SEO-friendly. Dari landing page hingga e-commerce kompleks.
+                </p>
+                <ul class="space-y-2 text-gray-600 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Design Responsif</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> SEO Optimized</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Loading Cepat</li>
+                </ul>
+                <a href="{{ url_for('main.services') }}" class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                    Pelajari Lebih Lanjut <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <!-- Service 2 -->
+            <div class="bg-gradient-to-br from-secondary-50 to-secondary-100 p-8 rounded-2xl hover-lift" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-secondary-500 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-palette text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Template Premium</h3>
+                <p class="text-gray-600 mb-6">
+                    Koleksi template website premium dengan desain modern dan fitur lengkap. Siap pakai dengan lisensi resmi.
+                </p>
+                <ul class="space-y-2 text-gray-600 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Design Modern</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Lisensi Resmi</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Update Gratis</li>
+                </ul>
+                <a href="{{ url_for('main.templates') }}" class="text-secondary-600 font-semibold hover:text-secondary-700 transition-colors">
+                    Lihat Template <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            <!-- Service 3 -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl hover-lift" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 bg-accent-purple rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-tools text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Perbaikan Kode</h3>
+                <p class="text-gray-600 mb-6">
+                    Layanan debugging, optimasi, dan perbaikan website yang bermasalah. Tim ahli siap membantu Anda.
+                </p>
+                <ul class="space-y-2 text-gray-600 mb-6">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Bug Fixing</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Optimasi Performa</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Security Update</li>
+                </ul>
+                <a href="{{ url_for('main.services') }}" class="text-accent-purple font-semibold hover:text-purple-700 transition-colors">
+                    Konsultasi Gratis <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Templates -->
+<section class="py-20 bg-gray-50" data-aos="fade-up">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Template <span class="text-gradient">Terpopuler</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Pilihan template terbaik yang telah dipercaya oleh ribuan pengguna
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for template in featured_templates %}
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                    {% if template.image %}
+                        <img src="{{ template.image }}" alt="{{ template.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-image text-4xl text-gray-400"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            {{ template.category|title }}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ template.name }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ template.description }}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="text-2xl font-bold text-primary-600">
+                            Rp {{ "{:,.0f}".format(template.price) }}
+                        </div>
+                        <a href="{{ url_for('main.template_detail', id=template.id) }}" 
+                           class="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors">
+                            Lihat Detail
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{{ url_for('main.templates') }}" 
+               class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 hover-lift">
+                Lihat Semua Template <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-20 bg-white" data-aos="fade-up">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Mengapa Pilih <span class="text-gradient">Kami?</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Komitmen kami untuk memberikan layanan terbaik dengan standar profesional
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-award text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Kualitas Terjamin</h3>
+                <p class="text-gray-600">Setiap project dikerjakan dengan standar kualitas tinggi dan testing menyeluruh.</p>
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-20 h-20 bg-gradient-to-br from-secondary-500 to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-clock text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Pengerjaan Cepat</h3>
+                <p class="text-gray-600">Timeline yang jelas dan pengerjaan yang efisien tanpa mengorbankan kualitas.</p>
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-20 h-20 bg-gradient-to-br from-accent-purple to-accent-orange rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-headset text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Support 24/7</h3>
+                <p class="text-gray-600">Tim support yang siap membantu Anda kapan saja melalui WhatsApp dan email.</p>
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-20 h-20 bg-gradient-to-br from-accent-orange to-primary-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shield-alt text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Garansi Resmi</h3>
+                <p class="text-gray-600">Garansi perbaikan dan maintenance untuk memastikan website Anda selalu optimal.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 gradient-bg relative overflow-hidden">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6" data-aos="fade-up">
+            Siap Memulai Project Anda?
+        </h2>
+        <p class="text-xl mb-8 max-w-3xl mx-auto opacity-90" data-aos="fade-up" data-aos-delay="100">
+            Konsultasikan kebutuhan digital Anda dengan tim ahli kami. 
+            Dapatkan solusi terbaik untuk bisnis Anda hari ini juga!
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-aos="fade-up" data-aos-delay="200">
+            <a href="https://wa.me/6289534093450?text=Halo%20imsydz%20Dev,%20saya%20tertarik%20dengan%20layanan%20Anda" 
+               class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-600 transition-all duration-300 hover-lift">
+                <i class="fab fa-whatsapp mr-2"></i>
+                Konsultasi Gratis
+            </a>
+            <a href="{{ url_for('main.contact') }}" 
+               class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300 hover-lift">
+                <i class="fas fa-envelope mr-2"></i>
+                Hubungi Kami
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

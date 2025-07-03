@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail Transaksi #{{ transaction.id }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Detail Transaksi #{{ transaction.id }}
+            </h1>
+            <p class="text-gray-600">Kelola dan review transaksi pelanggan</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Informasi Transaksi -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Detail Transaksi -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-receipt text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 ml-4">Informasi Transaksi</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Pengguna</span>
+                                <span class="text-gray-900 font-semibold text-lg">{{ transaction.user.username }}</span>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Template</span>
+                                <span class="text-gray-900 font-semibold text-lg">{{ transaction.template.name }}</span>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Jumlah</span>
+                                <span class="text-3xl font-bold text-primary-600">Rp{{ "{:,.0f}".format(transaction.amount) }}</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Metode Pembayaran</span>
+                                <span class="text-gray-900 font-semibold text-lg capitalize">{{ transaction.payment_method }}</span>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Nomor WhatsApp</span>
+                                <a href="https://wa.me/{{ transaction.whatsapp_number.replace('+', '').replace('-', '').replace(' ', '') }}" 
+                                   target="_blank"
+                                   class="text-green-600 font-semibold text-lg hover:text-green-700 transition-colors">
+                                    <i class="fab fa-whatsapp mr-2"></i>{{ transaction.whatsapp_number }}
+                                </a>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Status</span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold w-fit
+                                    {% if transaction.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif transaction.status == 'confirmed' %}bg-green-100 text-green-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    <div class="w-2 h-2 rounded-full mr-2
+                                        {% if transaction.status == 'pending' %}bg-yellow-500
+                                        {% elif transaction.status == 'confirmed' %}bg-green-500
+                                        {% else %}bg-red-500{% endif %}"></div>
+                                    {{ transaction.status|title }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Tanggal Dibuat</span>
+                                <span class="text-gray-900 font-semibold">{{ transaction.created_at.strftime('%d %b %Y %H:%M') }}</span>
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <span class="text-gray-500 text-sm font-medium mb-1">Terakhir Diupdate</span>
+                                <span class="text-gray-900 font-semibold">{{ transaction.updated_at.strftime('%d %b %Y %H:%M') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if transaction.note %}
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <span class="text-gray-500 text-sm font-medium block mb-2">Catatan Pelanggan</span>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-900">{{ transaction.note }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if transaction.admin_note %}
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <span class="text-gray-500 text-sm font-medium block mb-2">Catatan Admin</span>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <p class="text-blue-900">{{ transaction.admin_note }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Bukti Pembayaran -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-file-image text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 ml-4">Bukti Pembayaran</h2>
+                    </div>
+
+                    {% if transaction.payment_proof %}
+                    <div class="text-center">
+                        <div class="inline-block bg-gray-100 rounded-xl p-4 mb-4">
+                            <i class="fas fa-file-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-600 text-sm">File bukti pembayaran</p>
+                        </div>
+                        <div>
+                            <a href="/{{ transaction.payment_proof }}" 
+                               target="_blank"
+                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Lihat Bukti Pembayaran
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-image text-gray-400 text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500">Belum ada bukti pembayaran yang diupload</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Aksi Admin -->
+            <div class="space-y-6">
+                {% if transaction.status == 'pending' %}
+                <!-- Konfirmasi Transaksi -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check-circle text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 ml-4">Konfirmasi Transaksi</h3>
+                    </div>
+
+                    <form action="{{ url_for('admin.confirm_transaction', id=transaction.id) }}" method="POST" class="space-y-4">
+                        <div>
+                            <label for="admin_note_confirm" class="block text-sm font-medium text-gray-700 mb-2">
+                                Catatan Admin (Opsional)
+                            </label>
+                            <textarea 
+                                id="admin_note_confirm" 
+                                name="admin_note" 
+                                rows="3" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                                placeholder="Tambahkan catatan untuk pelanggan..."
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold py-3 px-4 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105"
+                        >
+                            <i class="fas fa-check mr-2"></i>
+                            Konfirmasi Transaksi
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tolak Transaksi -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-times-circle text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 ml-4">Tolak Transaksi</h3>
+                    </div>
+
+                    <form action="{{ url_for('admin.reject_transaction', id=transaction.id) }}" method="POST" class="space-y-4">
+                        <div>
+                            <label for="admin_note_reject" class="block text-sm font-medium text-gray-700 mb-2">
+                                Alasan Penolakan
+                            </label>
+                            <textarea 
+                                id="admin_note_reject" 
+                                name="admin_note" 
+                                rows="3" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                                placeholder="Jelaskan alasan penolakan..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold py-3 px-4 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
+                            onclick="return confirm('Apakah Anda yakin ingin menolak transaksi ini?')"
+                        >
+                            <i class="fas fa-times mr-2"></i>
+                            Tolak Transaksi
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <!-- Status Transaksi -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center
+                            {% if transaction.status == 'confirmed' %}bg-green-100
+                            {% else %}bg-red-100{% endif %}">
+                            <i class="{% if transaction.status == 'confirmed' %}fas fa-check text-green-600{% else %}fas fa-times text-red-600{% endif %} text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            Transaksi {{ transaction.status|title }}
+                        </h3>
+                        <p class="text-gray-600">
+                            {% if transaction.status == 'confirmed' %}
+                                Transaksi telah dikonfirmasi dan lisensi telah dibuat.
+                            {% else %}
+                                Transaksi telah ditolak.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a 
+                            href="https://wa.me/{{ transaction.whatsapp_number.replace('+', '').replace('-', '').replace(' ', '') }}" 
+                            target="_blank"
+                            class="flex items-center w-full px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                        >
+                            <i class="fab fa-whatsapp mr-3"></i>
+                            Hubungi via WhatsApp
+                        </a>
+                        
+                        <a 
+                            href="{{ url_for('admin.transactions') }}" 
+                            class="flex items-center w-full px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                            <i class="fas fa-arrow-left mr-3"></i>
+                            Kembali ke Daftar Transaksi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

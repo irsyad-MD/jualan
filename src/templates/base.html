@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}imsydz Dev - Layanan Digital & Template Website{% endblock %}</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                        },
+                        secondary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            orange: '#f97316',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #ef4444 0%, #3b82f6 50%, #8b5cf6 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #ef4444, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{{ url_for('main.index') }}" class="text-2xl font-bold text-gradient">
+                        imsydz Dev
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ url_for('main.index') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Beranda</a>
+                    <a href="{{ url_for('main.services') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Layanan</a>
+                    <a href="{{ url_for('main.templates') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Template</a>
+                    <a href="{{ url_for('main.about') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Tentang</a>
+                    <a href="{{ url_for('main.contact') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Kontak</a>
+                    
+                    {% if current_user.is_authenticated %}
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition-colors">
+                                <i class="fas fa-user-circle"></i>
+                                <span>{{ current_user.username }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <a href="{{ url_for('main.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Dashboard</a>
+                                {% if current_user.is_admin() %}
+                                    <a href="{{ url_for('admin.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Admin Panel</a>
+                                {% endif %}
+                                <a href="{{ url_for('auth.profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Profile</a>
+                                <hr class="my-1">
+                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-50">Logout</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="text-gray-700 hover:text-primary-600 transition-colors">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-300">
+                            Daftar
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-200 hidden">
+            <div class="px-4 py-2 space-y-2">
+                <a href="{{ url_for('main.index') }}" class="block py-2 text-gray-700 hover:text-primary-600">Beranda</a>
+                <a href="{{ url_for('main.services') }}" class="block py-2 text-gray-700 hover:text-primary-600">Layanan</a>
+                <a href="{{ url_for('main.templates') }}" class="block py-2 text-gray-700 hover:text-primary-600">Template</a>
+                <a href="{{ url_for('main.about') }}" class="block py-2 text-gray-700 hover:text-primary-600">Tentang</a>
+                <a href="{{ url_for('main.contact') }}" class="block py-2 text-gray-700 hover:text-primary-600">Kontak</a>
+                
+                {% if current_user.is_authenticated %}
+                    <hr class="my-2">
+                    <a href="{{ url_for('main.dashboard') }}" class="block py-2 text-gray-700 hover:text-primary-600">Dashboard</a>
+                    {% if current_user.is_admin() %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="block py-2 text-gray-700 hover:text-primary-600">Admin Panel</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.profile') }}" class="block py-2 text-gray-700 hover:text-primary-600">Profile</a>
+                    <a href="{{ url_for('auth.logout') }}" class="block py-2 text-red-600">Logout</a>
+                {% else %}
+                    <hr class="my-2">
+                    <a href="{{ url_for('auth.login') }}" class="block py-2 text-gray-700 hover:text-primary-600">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="block py-2 text-primary-600 font-semibold">Daftar</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-20 right-4 z-50 space-y-2">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} bg-white border-l-4 p-4 rounded-lg shadow-lg max-w-sm animate-slide-up
+                        {% if category == 'error' %}border-red-500 bg-red-50{% endif %}
+                        {% if category == 'success' %}border-green-500 bg-green-50{% endif %}
+                        {% if category == 'info' %}border-blue-500 bg-blue-50{% endif %}
+                        {% if category == 'warning' %}border-yellow-500 bg-yellow-50{% endif %}">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                {% if category == 'error' %}
+                                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                                {% elif category == 'success' %}
+                                    <i class="fas fa-check-circle text-green-500"></i>
+                                {% elif category == 'info' %}
+                                    <i class="fas fa-info-circle text-blue-500"></i>
+                                {% elif category == 'warning' %}
+                                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-800">{{ message }}</p>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content -->
+    <main class="pt-16">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-2xl font-bold text-gradient mb-4">imsydz Dev</h3>
+                    <p class="text-gray-400 mb-4">
+                        Penyedia layanan digital terpercaya untuk pembuatan website, template, dan perbaikan kode. 
+                        Kami membantu bisnis Anda berkembang di era digital.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/6289534093450" class="text-green-500 hover:text-green-400 transition-colors">
+                            <i class="fab fa-whatsapp text-2xl"></i>
+                        </a>
+                        <a href="mailto:imsyad8@gmail.com" class="text-blue-500 hover:text-blue-400 transition-colors">
+                            <i class="fas fa-envelope text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Layanan</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url_for('main.services') }}" class="hover:text-white transition-colors">Pembuatan Website</a></li>
+                        <li><a href="{{ url_for('main.templates') }}" class="hover:text-white transition-colors">Template Website</a></li>
+                        <li><a href="{{ url_for('main.services') }}" class="hover:text-white transition-colors">Perbaikan Kode</a></li>
+                        <li><a href="{{ url_for('main.services') }}" class="hover:text-white transition-colors">Konsultasi IT</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fab fa-whatsapp mr-2"></i>
+                            <span>0895-3409-3450</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>imsyad8@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="border-gray-800 my-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2024 imsydz Dev. All rights reserved.
+                </p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Auto-hide flash messages
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateX(100%)';
+                setTimeout(function() {
+                    alert.remove();
+                }, 300);
+            });
+        }, 5000);
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

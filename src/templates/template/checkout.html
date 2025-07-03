@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - {{ transaction.template.name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Checkout Transaksi
+            </h1>
+            <p class="text-gray-600">Transaksi #{{ transaction.id }}</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Detail Pembelian -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shopping-cart text-white text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 ml-4">Detail Pembelian</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium">Template:</span>
+                        <span class="text-gray-900 font-semibold">{{ transaction.template.name }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium">Harga:</span>
+                        <span class="text-2xl font-bold text-primary-600">Rp{{ "{:,.0f}".format(transaction.amount) }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium">Metode Pembayaran:</span>
+                        <span class="text-gray-900 font-semibold capitalize">{{ transaction.payment_method }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium">Nomor WhatsApp:</span>
+                        <span class="text-gray-900 font-semibold">{{ transaction.whatsapp_number }}</span>
+                    </div>
+                    
+                    {% if transaction.note %}
+                    <div class="py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium block mb-2">Catatan:</span>
+                        <p class="text-gray-900 bg-gray-50 p-3 rounded-lg">{{ transaction.note }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-gray-600 font-medium">Status:</span>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold
+                            {% if transaction.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif transaction.status == 'confirmed' %}bg-green-100 text-green-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ transaction.status|title }}
+                        </span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3">
+                        <span class="text-gray-600 font-medium">Tanggal Dibuat:</span>
+                        <span class="text-gray-900 font-semibold">{{ transaction.created_at.strftime('%d %b %Y %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Bukti Pembayaran -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 hover-lift">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-upload text-white text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 ml-4">Upload Bukti Pembayaran</h2>
+                </div>
+
+                {% if transaction.status == 'pending' %}
+                <form action="{{ url_for('template.checkout', transaction_id=transaction.id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-1">Informasi Pembayaran</h4>
+                                <p class="text-blue-700 text-sm mb-2">
+                                    Silakan transfer sebesar <span class="font-bold">Rp{{ "{:,.0f}".format(transaction.amount) }}</span> ke:
+                                </p>
+                                <p class="text-blue-700 text-sm font-bold">
+                                    DANA: 085883225704 (a.n. Imsyad)
+                                </p>
+                                <p class="text-blue-700 text-sm mt-2">
+                                    Setelah transfer, upload bukti pembayaran di bawah ini. Transaksi akan diproses dalam 1x24 jam setelah pembayaran dikonfirmasi.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary-400 transition-colors">
+                        <div class="mb-4">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                        </div>
+                        <label for="payment_proof" class="block text-lg font-semibold text-gray-700 mb-2">
+                            Pilih File Bukti Pembayaran
+                        </label>
+                        <p class="text-gray-500 mb-4">Format yang didukung: JPG, PNG, PDF (Max 5MB)</p>
+                        <input 
+                            type="file" 
+                            id="payment_proof" 
+                            name="payment_proof" 
+                            accept=".jpg,.jpeg,.png,.pdf" 
+                            required
+                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 transition-all"
+                        >
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-4 px-6 rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                        <i class="fas fa-upload mr-2"></i>
+                        Upload Bukti Pembayaran
+                    </button>
+                </form>
+                {% else %}
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Pembayaran Sudah Diproses</h3>
+                    <p class="text-gray-600">Transaksi ini sudah {{ transaction.status }}.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <a 
+                href="{{ url_for('main.dashboard') }}" 
+                class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+            >
+                <i class="fas fa-arrow-left mr-2"></i>
+                Kembali ke Dashboard
+            </a>
+            
+            {% if transaction.status == 'confirmed' %}
+            <a 
+                href="{{ url_for('template.download', id=transaction.template.id) }}" 
+                class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-xl hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+            >
+                <i class="fas fa-download mr-2"></i>
+                Download Template
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Template Premium - imsydz Dev{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-20 bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6" data-aos="fade-up">
+            Template <span class="text-gradient">Premium</span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">
+            Koleksi template website berkualitas tinggi dengan desain modern dan fitur lengkap. 
+            Siap pakai dengan lisensi resmi dan support selamanya.
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+            <form method="GET" class="relative">
+                <input type="text" 
+                       name="search" 
+                       value="{{ current_search }}"
+                       placeholder="Cari template yang Anda butuhkan..."
+                       class="w-full px-6 py-4 pl-12 pr-20 text-lg border border-gray-300 rounded-full focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400 text-xl"></i>
+                </div>
+                <button type="submit" 
+                        class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                    <div class="bg-primary-500 text-white px-6 py-2 rounded-full hover:bg-primary-600 transition-colors">
+                        Cari
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Filters and Sort -->
+<section class="py-8 bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <!-- Categories Filter -->
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ url_for('main.templates') }}" 
+                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors
+                   {% if not current_category %}bg-primary-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                    Semua
+                </a>
+                {% for category in categories %}
+                <a href="{{ url_for('main.templates', category=category) }}" 
+                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors
+                   {% if current_category == category %}bg-primary-500 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                    {{ category|title }}
+                </a>
+                {% endfor %}
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-600">Urutkan:</span>
+                <form method="GET" class="inline">
+                    {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+                    {% if current_search %}<input type="hidden" name="search" value="{{ current_search }}">{% endif %}
+                    <select name="sort" 
+                            onchange="this.form.submit()"
+                            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Terbaru</option>
+                        <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Terlama</option>
+                        <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Harga Terendah</option>
+                        <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Harga Tertinggi</option>
+                        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Nama A-Z</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Templates Grid -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if templates.items %}
+            <!-- Results Info -->
+            <div class="mb-8">
+                <p class="text-gray-600">
+                    Menampilkan {{ templates.items|length }} dari {{ templates.total }} template
+                    {% if current_search %}untuk "<strong>{{ current_search }}</strong>"{% endif %}
+                    {% if current_category %}dalam kategori "<strong>{{ current_category|title }}</strong>"{% endif %}
+                </p>
+            </div>
+            
+            <!-- Templates Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {% for template in templates.items %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift group" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                    <!-- Template Image -->
+                    <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                        {% if template.image %}
+                            <img src="{{ template.image }}" 
+                                 alt="{{ template.name }}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-image text-4xl text-gray-400"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                {{ template.category|title }}
+                            </span>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ url_for('main.template_detail', id=template.id) }}" 
+                               class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-eye text-gray-600"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Template Info -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
+                            {{ template.name }}
+                        </h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">
+                            {{ template.description }}
+                        </p>
+                        
+                        <!-- Tags -->
+                        {% if template.tags %}
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                {% set tags = template.tags|from_json %}
+                                {% for tag in tags[:3] %}
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                                    {{ tag }}
+                                </span>
+                                {% endfor %}
+                                {% if tags|length > 3 %}
+                                <span class="text-gray-400 text-xs">+{{ tags|length - 3 }} lagi</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Price and Action -->
+                        <div class="flex items-center justify-between">
+                            <div class="text-2xl font-bold text-primary-600">
+                                Rp {{ "{:,.0f}".format(template.price) }}
+                            </div>
+                            <a href="{{ url_for('main.template_detail', id=template.id) }}" 
+                               class="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold">
+                                Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if templates.pages > 1 %}
+            <div class="mt-12 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if templates.has_prev %}
+                        <a href="{{ url_for('main.templates', page=templates.prev_num, category=current_category, search=current_search, sort=current_sort) }}" 
+                           class="px-3 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    {% endif %}
+                    
+                    {% for page_num in templates.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != templates.page %}
+                                <a href="{{ url_for('main.templates', page=page_num, category=current_category, search=current_search, sort=current_sort) }}" 
+                                   class="px-3 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                                    {{ page_num }}
+                                </a>
+                            {% else %}
+                                <span class="px-3 py-2 rounded-lg bg-primary-500 text-white font-semibold">
+                                    {{ page_num }}
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="px-3 py-2 text-gray-400">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if templates.has_next %}
+                        <a href="{{ url_for('main.templates', page=templates.next_num, category=current_category, search=current_search, sort=current_sort) }}" 
+                           class="px-3 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        {% else %}
+            <!-- No Results -->
+            <div class="text-center py-16">
+                <i class="fas fa-search text-6xl text-gray-300 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Template Tidak Ditemukan</h3>
+                <p class="text-gray-600 mb-8">
+                    {% if current_search %}
+                        Tidak ada template yang cocok dengan pencarian "<strong>{{ current_search }}</strong>"
+                    {% elif current_category %}
+                        Tidak ada template dalam kategori "<strong>{{ current_category|title }}</strong>"
+                    {% else %}
+                        Belum ada template yang tersedia
+                    {% endif %}
+                </p>
+                <div class="space-x-4">
+                    <a href="{{ url_for('main.templates') }}" 
+                       class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">
+                        Lihat Semua Template
+                    </a>
+                    <a href="{{ url_for('main.contact') }}" 
+                       class="border border-primary-500 text-primary-500 px-6 py-3 rounded-lg hover:bg-primary-50 transition-colors">
+                        Request Template Custom
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-r from-primary-500 to-secondary-500 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
+            Tidak Menemukan Template yang Cocok?
+        </h2>
+        <p class="text-xl mb-8 opacity-90" data-aos="fade-up" data-aos-delay="100">
+            Kami siap membuat template custom sesuai kebutuhan spesifik Anda
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+            <a href="{{ url_for('main.services') }}" 
+               class="bg-white text-primary-600 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                Layanan Custom
+            </a>
+            <a href="https://wa.me/6289534093450?text=Halo%20imsydz%20Dev,%20saya%20butuh%20template%20custom" 
+               class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary-600 transition-colors">
+                Konsultasi Gratis
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Add from_json filter for Jinja2
+function parseJSON(str) {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return [];
+    }
+}
+</script>
+{% endblock %}
+

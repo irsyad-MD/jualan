@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Kelola Template - Admin{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Kelola Template</h1>
+                    <p class="text-gray-600 mt-1">Kelola semua template yang tersedia</p>
+                </div>
+                <a href="{{ url_for('admin.add_template') }}" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Tambah Template
+                </a>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <form method="GET" class="flex gap-4">
+                <div class="flex-1">
+                    <input type="text" name="search" value="{{ request.args.get('search', '') }}" 
+                           placeholder="Cari template..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <button type="submit" 
+                        class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-search mr-2"></i>Cari
+                </button>
+            </form>
+        </div>
+
+        <!-- Templates Table -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Template</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for template in templates.items %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    {% if template.image %}
+                                    <img class="h-10 w-10 rounded-lg object-cover mr-4" 
+                                         src="{{ url_for('static', filename=template.image) }}" 
+                                         alt="{{ template.name }}">
+                                    {% else %}
+                                    <div class="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center mr-4">
+                                        <i class="fas fa-file-code text-gray-400"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ template.name }}</div>
+                                        <div class="text-sm text-gray-500">{{ template.slug }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ template.category or 'Umum' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                Rp {{ "{:,.0f}".format(template.price) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if template.is_active %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <span class="w-1.5 h-1.5 mr-1.5 bg-green-400 rounded-full"></span>
+                                    Aktif
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <span class="w-1.5 h-1.5 mr-1.5 bg-red-400 rounded-full"></span>
+                                    Nonaktif
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ template.created_at.strftime('%d %b %Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <a href="{{ url_for('admin.edit_template', id=template.id) }}" 
+                                       class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-md transition-colors">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </a>
+                                    <form method="POST" action="{{ url_for('admin.delete_template', id=template.id) }}" 
+                                          class="inline" 
+                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus template ini?')">
+                                        <button type="submit" 
+                                                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                <i class="fas fa-file-code text-4xl mb-4 text-gray-300"></i>
+                                <p class="text-lg">Belum ada template</p>
+                                <p class="text-sm">Tambahkan template pertama Anda</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if templates.pages > 1 %}
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if templates.has_prev %}
+                    <a href="{{ url_for('admin.templates', page=templates.prev_num, search=request.args.get('search', '')) }}" 
+                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Previous
+                    </a>
+                    {% endif %}
+                    {% if templates.has_next %}
+                    <a href="{{ url_for('admin.templates', page=templates.next_num, search=request.args.get('search', '')) }}" 
+                       class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">{{ templates.per_page * (templates.page - 1) + 1 }}</span>
+                            to <span class="font-medium">{{ templates.per_page * (templates.page - 1) + templates.items|length }}</span>
+                            of <span class="font-medium">{{ templates.total }}</span> results
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {% if templates.has_prev %}
+                            <a href="{{ url_for('admin.templates', page=templates.prev_num, search=request.args.get('search', '')) }}" 
+                               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% for page_num in templates.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != templates.page %}
+                                    <a href="{{ url_for('admin.templates', page=page_num, search=request.args.get('search', '')) }}" 
+                                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                        {{ page_num }}
+                                    </a>
+                                    {% else %}
+                                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                                        {{ page_num }}
+                                    </span>
+                                    {% endif %}
+                                {% else %}
+                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                    ...
+                                </span>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if templates.has_next %}
+                            <a href="{{ url_for('admin.templates', page=templates.next_num, search=request.args.get('search', '')) }}" 
+                               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

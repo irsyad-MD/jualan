@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - imsydz Dev{% endblock %}
+
+{% block content %}
+<section class="py-8 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8" data-aos="fade-up">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Dashboard
+            </h1>
+            <p class="text-gray-600">
+                Selamat datang kembali, <span class="font-semibold text-primary-600">{{ current_user.username }}</span>!
+            </p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Purchases -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover-lift" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shopping-cart text-primary-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Pembelian</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.total_purchases }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Confirmed Purchases -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover-lift" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Dikonfirmasi</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.confirmed_purchases }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Active Licenses -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover-lift" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-key text-secondary-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Lisensi Aktif</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.active_licenses }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pending Transactions -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover-lift" data-aos="fade-up" data-aos-delay="400">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Pending</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.pending_transactions }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Recent Transactions -->
+            <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">Transaksi Terbaru</h2>
+                    <a href="#" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        Lihat Semua
+                    </a>
+                </div>
+                
+                {% if transactions %}
+                    <div class="space-y-4">
+                        {% for transaction in transactions %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-invoice text-primary-600"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">{{ transaction.template.name }}</p>
+                                    <p class="text-xs text-gray-500">{{ transaction.created_at.strftime('%d %b %Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-gray-900">Rp {{ "{:,.0f}".format(transaction.amount) }}</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if transaction.status == 'confirmed' %}bg-green-100 text-green-800{% endif %}
+                                    {% if transaction.status == 'pending' %}bg-yellow-100 text-yellow-800{% endif %}
+                                    {% if transaction.status == 'rejected' %}bg-red-100 text-red-800{% endif %}">
+                                    {{ transaction.status|title }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-receipt text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Belum ada transaksi</p>
+                        <a href="{{ url_for('main.templates') }}" class="text-primary-600 hover:text-primary-700 font-medium">
+                            Mulai belanja template
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Active Licenses -->
+            <div class="bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">Lisensi Aktif</h2>
+                    <a href="#" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        Lihat Semua
+                    </a>
+                </div>
+                
+                {% if licenses %}
+                    <div class="space-y-4">
+                        {% for license in licenses %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-secondary-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-key text-secondary-600"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">{{ license.template.name }}</p>
+                                    <p class="text-xs text-gray-500">{{ license.created_at.strftime('%d %b %Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if license.status == 'valid' %}bg-green-100 text-green-800{% endif %}
+                                    {% if license.status == 'pending' %}bg-yellow-100 text-yellow-800{% endif %}
+                                    {% if license.status == 'expired' %}bg-red-100 text-red-800{% endif %}">
+                                    {{ license.status|title }}
+                                </span>
+                                {% if license.status == 'valid' %}
+                                    <div class="mt-1">
+                                        <a href="{{ url_for('template.download', id=license.template_id) }}" 
+                                           class="text-xs text-primary-600 hover:text-primary-700">
+                                            Download
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-key text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Belum ada lisensi aktif</p>
+                        <a href="{{ url_for('main.templates') }}" class="text-primary-600 hover:text-primary-700 font-medium">
+                            Beli template sekarang
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6" data-aos="fade-up" data-aos-delay="700">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Aksi Cepat</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="{{ url_for('main.templates') }}" 
+                   class="flex items-center p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg hover:from-primary-100 hover:to-primary-200 transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-palette text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-gray-900">Jelajahi Template</p>
+                        <p class="text-sm text-gray-600">Temukan template terbaru</p>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('main.services') }}" 
+                   class="flex items-center p-4 bg-gradient-to-r from-secondary-50 to-secondary-100 rounded-lg hover:from-secondary-100 hover:to-secondary-200 transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-secondary-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-code text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-gray-900">Layanan Custom</p>
+                        <p class="text-sm text-gray-600">Buat website custom</p>
+                    </div>
+                </a>
+                
+                <a href="https://wa.me/6289534093450?text=Halo%20imsydz%20Dev,%20saya%20butuh%20bantuan" 
+                   class="flex items-center p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fab fa-whatsapp text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-gray-900">Bantuan</p>
+                        <p class="text-sm text-gray-600">Hubungi support</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

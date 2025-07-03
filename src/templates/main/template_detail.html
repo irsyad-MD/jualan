@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}{{ template.name }} - imsydz Dev{% endblock %}
+
+{% block content %}
+<section class="py-8 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        <div class="mb-8" data-aos="fade-up">
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-4">
+                    <li>
+                        <a href="{{ url_for('main.index') }}" class="text-gray-500 hover:text-gray-700">Beranda</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.templates') }}" class="text-gray-500 hover:text-gray-700">Template</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </li>
+                    <li class="text-gray-900 font-medium">{{ template.name }}</li>
+                </ol>
+            </nav>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Template Preview -->
+            <div class="lg:col-span-2">
+                <!-- Main Image -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6" data-aos="fade-up">
+                    <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 relative">
+                        {% if template.image %}
+                            <img src="{{ template.image }}" 
+                                 alt="{{ template.name }}" 
+                                 class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-image text-6xl text-gray-400"></i>
+                                <div class="ml-4">
+                                    <h3 class="text-xl font-semibold text-gray-600">Preview Tidak Tersedia</h3>
+                                    <p class="text-gray-500">Gambar preview akan segera ditambahkan</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary-500 text-white px-4 py-2 rounded-full font-semibold">
+                                {{ template.category|title }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="bg-white rounded-2xl shadow-lg p-8" data-aos="fade-up" data-aos-delay="100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Deskripsi Template</h2>
+                    <div class="prose max-w-none text-gray-600">
+                        {{ template.description or "Deskripsi template akan segera ditambahkan." }}
+                    </div>
+                    
+                    <!-- Tags -->
+                    {% if template.tags %}
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-3">Tags</h3>
+                            <div class="flex flex-wrap gap-2">
+                                {% set tags = template.tags|from_json %}
+                                {% for tag in tags %}
+                                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                                    {{ tag }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Features -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Fitur Template</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">Responsive Design</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">SEO Optimized</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">Cross Browser Compatible</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">Clean Code</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">Documentation Included</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span class="text-gray-700">Lifetime Updates</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Purchase Panel -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg p-8 sticky top-8" data-aos="fade-up" data-aos-delay="200">
+                    <!-- Price -->
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-bold text-primary-600 mb-2">
+                            Rp {{ "{:,.0f}".format(template.price) }}
+                        </div>
+                        <p class="text-gray-600">Lisensi Selamanya</p>
+                    </div>
+                    
+                    <!-- License Status -->
+                    {% if current_user.is_authenticated %}
+                        {% if user_license %}
+                            {% if user_license.status == 'valid' %}
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
+                                        <div>
+                                            <h3 class="font-semibold text-green-800">Anda Memiliki Lisensi</h3>
+                                            <p class="text-sm text-green-600">Template siap didownload</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Download Button -->
+                                <a href="{{ url_for('template.download', id=template.id) }}" 
+                                   class="w-full bg-green-500 text-white py-4 px-6 rounded-lg font-semibold text-center block hover:bg-green-600 transition-colors mb-4">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Download Template
+                                </a>
+                                
+                                <!-- Preview Button -->
+                                <a href="{{ url_for('template.preview', id=template.id) }}" 
+                                   class="w-full border border-green-500 text-green-500 py-3 px-6 rounded-lg font-semibold text-center block hover:bg-green-50 transition-colors">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Preview Template
+                                </a>
+                            {% elif user_license.status == 'pending' %}
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock text-yellow-500 text-xl mr-3"></i>
+                                        <div>
+                                            <h3 class="font-semibold text-yellow-800">Transaksi Pending</h3>
+                                            <p class="text-sm text-yellow-600">Menunggu konfirmasi admin</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <a href="{{ url_for('main.dashboard') }}" 
+                                   class="w-full bg-yellow-500 text-white py-4 px-6 rounded-lg font-semibold text-center block hover:bg-yellow-600 transition-colors">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Cek Status Transaksi
+                                </a>
+                            {% else %}
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-times-circle text-red-500 text-xl mr-3"></i>
+                                        <div>
+                                            <h3 class="font-semibold text-red-800">Lisensi Tidak Valid</h3>
+                                            <p class="text-sm text-red-600">Silakan beli ulang template</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <a href="{{ url_for('template.buy', id=template.id) }}" 
+                                   class="w-full bg-primary-500 text-white py-4 px-6 rounded-lg font-semibold text-center block hover:bg-primary-600 transition-colors">
+                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                    Beli Template
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <!-- Purchase Button -->
+                            <a href="{{ url_for('template.buy', id=template.id) }}" 
+                               class="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-4 px-6 rounded-lg font-semibold text-center block hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 transform hover:scale-105 mb-4">
+                                <i class="fas fa-shopping-cart mr-2"></i>
+                                Beli Sekarang
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <!-- Login Required -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <div class="text-center">
+                                <i class="fas fa-info-circle text-blue-500 text-2xl mb-2"></i>
+                                <h3 class="font-semibold text-blue-800 mb-1">Login Diperlukan</h3>
+                                <p class="text-sm text-blue-600">Silakan login untuk membeli template</p>
+                            </div>
+                        </div>
+                        
+                        <a href="{{ url_for('auth.login') }}" 
+                           class="w-full bg-primary-500 text-white py-4 px-6 rounded-lg font-semibold text-center block hover:bg-primary-600 transition-colors mb-4">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Login untuk Beli
+                        </a>
+                        
+                        <a href="{{ url_for('auth.register') }}" 
+                           class="w-full border border-primary-500 text-primary-500 py-3 px-6 rounded-lg font-semibold text-center block hover:bg-primary-50 transition-colors">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Daftar Akun Baru
+                        </a>
+                    {% endif %}
+                    
+                    <!-- Support -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h3 class="font-semibold text-gray-900 mb-3">Butuh Bantuan?</h3>
+                        <a href="https://wa.me/6289534093450?text=Halo%20imsydz%20Dev,%20saya%20tertarik%20dengan%20template%20{{ template.name }}" 
+                           class="flex items-center text-green-600 hover:text-green-700 transition-colors">
+                            <i class="fab fa-whatsapp text-xl mr-2"></i>
+                            <span>Hubungi via WhatsApp</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Template Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h3 class="font-semibold text-gray-900 mb-3">Info Template</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Kategori:</span>
+                                <span class="font-medium">{{ template.category|title }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Dibuat:</span>
+                                <span class="font-medium">{{ template.created_at.strftime('%d %b %Y') }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Update:</span>
+                                <span class="font-medium">{{ template.updated_at.strftime('%d %b %Y') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Templates -->
+        {% if related_templates %}
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center" data-aos="fade-up">
+                Template Serupa
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for related in related_templates %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover-lift" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 relative">
+                        {% if related.image %}
+                            <img src="{{ related.image }}" alt="{{ related.name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-image text-3xl text-gray-400"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-900 mb-2">{{ related.name }}</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-lg font-bold text-primary-600">
+                                Rp {{ "{:,.0f}".format(related.price) }}
+                            </div>
+                            <a href="{{ url_for('main.template_detail', id=related.id) }}" 
+                               class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
